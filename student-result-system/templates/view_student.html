@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }} — Results{% endblock %}
+{% block content %}
+<div class="container">
+  <a href="{{ url_for('admin_dashboard') }}" class="back-link">← Back to Dashboard</a>
+  <div class="page-title">{{ student.name }}</div>
+  <p class="page-sub">Roll: {{ student.roll }} &nbsp;·&nbsp; Batch: {{ student.batch }}</p>
+  <div class="stats-row">
+    <div class="stat-box"><div class="gpa-big">{{ gpa }}</div><div class="stat-label">GPA</div></div>
+    <div class="stat-box"><div class="stat-num">{{ results|length }}</div><div class="stat-label">Subjects</div></div>
+  </div>
+  <div class="card">
+    <table>
+      <thead><tr><th>Subject</th><th>Marks</th><th>Grade</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td style="font-weight:600">{{ r.subject }}</td>
+          <td style="font-family:'JetBrains Mono',monospace;color:var(--cyan)">{{ r.marks }}/100</td>
+          <td style="font-family:'JetBrains Mono',monospace;font-weight:700">{{ r.grade }}</td>
+          <td><span class="badge {{ 'badge-pass' if r.grade != 'F' else 'badge-fail' }}">{{ 'Pass' if r.grade != 'F' else 'Fail' }}</span></td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

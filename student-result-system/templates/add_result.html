@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Add Result{% endblock %}
+{% block content %}
+<div class="container" style="max-width:540px">
+  <a href="{{ url_for('admin_dashboard') }}" class="back-link">← Back to Dashboard</a>
+  <div class="card">
+    <h2 style="font-size:1.5rem;margin-bottom:0.25rem">Add / Update Result</h2>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:2rem">Marks out of 100. Existing subject marks will be updated.</p>
+    <form method="POST">
+      <div class="form-group">
+        <label>Select Student</label>
+        <select name="student_id" required>
+          <option value="">-- Choose student --</option>
+          {% for s in students %}
+          <option value="{{ s._id }}">{{ s.name }} ({{ s.roll }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group"><label>Subject</label><input name="subject" placeholder="e.g. Data Structures" required></div>
+      <div class="form-group"><label>Marks (out of 100)</label><input name="marks" type="number" min="0" max="100" placeholder="e.g. 78" required></div>
+      <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Save Result →</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Home — Student Result System{% endblock %}
+{% block content %}
+<div class="hero-home">
+  <h1>Student <span>Result</span> System</h1>
+  <p>A modern result management system built with Python, Flask and MongoDB. Students can view their results and GPA. Admins can manage students and publish results.</p>
+  <div class="hero-btns">
+    <a href="{{ url_for('student_login') }}" class="btn btn-primary">Student Login →</a>
+    <a href="{{ url_for('admin_login') }}" class="btn btn-outline">Admin Panel</a>
+  </div>
+  <div style="margin-top:4rem;display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;text-align:left">
+    <div class="card-sm">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem">🎓</div>
+      <div style="font-weight:600;margin-bottom:0.25rem">Student Portal</div>
+      <div style="font-size:0.83rem;color:var(--muted)">View results, grades and GPA anytime</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem">⚡</div>
+      <div style="font-weight:600;margin-bottom:0.25rem">Admin Panel</div>
+      <div style="font-size:0.83rem;color:var(--muted)">Manage students and publish results easily</div>
+    </div>
+    <div class="card-sm">
+      <div style="font-size:1.5rem;margin-bottom:0.75rem">📊</div>
+      <div style="font-weight:600;margin-bottom:0.25rem">Auto GPA</div>
+      <div style="font-size:0.83rem;color:var(--muted)">Automatic grade and GPA calculation</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

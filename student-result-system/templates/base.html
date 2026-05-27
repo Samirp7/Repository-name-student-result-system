@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Student Result System{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<nav class="nav">
+  <a href="/" class="nav-logo">&lt;<span>SRS</span> /&gt;</a>
+  <div class="nav-links">
+    {% if session.get('role') == 'student' %}
+      <a href="{{ url_for('student_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+    {% elif session.get('role') == 'admin' %}
+      <a href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('add_student') }}">Add Student</a>
+      <a href="{{ url_for('add_result') }}">Add Result</a>
+      <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+    {% else %}
+      <a href="{{ url_for('student_login') }}">Student Login</a>
+      <a href="{{ url_for('admin_login') }}" class="btn btn-primary btn-sm">Admin</a>
+    {% endif %}
+  </div>
+</nav>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div style="max-width:1100px;margin:1rem auto;padding:0 2rem">
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+{% block content %}{% endblock %}
+</body>
+</html>
