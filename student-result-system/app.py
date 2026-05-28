@@ -77,12 +77,33 @@ def admin_login():
 def admin_dashboard():
     if not session.get("admin"):
         return redirect(url_for("admin_login"))
-    db = get_db(); cur = db.cursor(dictionary=True)
-    cur.execute("SELECT * FROM students")
+
+    search = request.args.get("search", "").strip()
+
+    db = get_db()
+    cur = db.cursor(dictionary=True)
+
+    if search:
+        cur.execute("""
+            SELECT * FROM students
+            WHERE name LIKE %s OR roll LIKE %s
+        """, (f"%{search}%", f"%{search}%"))
+    else:
+        cur.execute("SELECT * FROM students")
+
     students = cur.fetchall()
+
     cur.execute("SELECT COUNT(*) as total FROM students")
-    total = cur.fetchone()["total"]; db.close()
-    return render_template("admin_dashboard.html", students=students, total=total)
+    total = cur.fetchone()["total"]
+
+    db.close()
+
+    return render_template(
+        "admin_dashboard.html",
+        students=students,
+        total=total,
+        search=search
+    )
 
 @app.route("/admin/add-student", methods=["GET","POST"])
 def add_student():
@@ -137,15 +158,30 @@ def view_student(sid):
     gpa = round(sum(r["gp"] for r in results) / len(results), 2) if results else 0
     return render_template("view_student.html", student=stu, results=results, gpa=gpa)
 
-@app.route("/admin/delete/<int:sid>")
-def delete_student(sid):
-    if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    db = get_db(); cur = db.cursor()
-    cur.execute("DELETE FROM students WHERE id=%s", (sid,))
-    db.commit(); db.close()
-    flash("Student deleted.", "success")
-    return redirect(url_for("admin_dashboard"))
+@app.route('/delete_student')
+def delete_student():
+    # 💡 FIX: Use request.args to grab '?sid=' from the URL string
+    sid = request.args.get('sid') 
+    
+    if not sid:
+        return "Error: Student ID is missing!", 400
+
+    conn = get_db()
+    cur = conn.cursor()
+    
+    try:
+        # Delete dependencies first if you didn't set up ON DELETE CASCADE
+        cur.execute("DELETE FROM results WHERE student_id = %s", (sid,))
+        cur.execute("DELETE FROM students WHERE id = %s", (sid,))
+        conn.commit()
+    except Exception as e:
+        print(f"Database Execution Failure: {e}")
+        return "Internal Database Error", 500
+    finally:
+        cur.close()
+        conn.close()
+        
+    return redirect(url_for('admin_dashboard')) # Replace with your dashboard function name
 
 @app.route("/logout")
 def logout():
